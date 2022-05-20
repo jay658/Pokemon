@@ -86,6 +86,9 @@ class Pokemon extends Sprite{
     let healthBar = '#enemyHealthBar'
     if(this.isEnemy) healthBar = '#playerHealthBar'
 
+    let healthNumber = '#enemyHPNumber'
+    if(this.isEnemy) healthNumber = '#playerHPNumber'
+
     let rotation = 1
     if(this.isEnemy) rotation = -2.2
 
@@ -128,6 +131,7 @@ class Pokemon extends Sprite{
               yoyo:true,
               duration: .08
             })
+            document.querySelector(healthNumber).innerHTML= `${recipient.health}/100`
             renderedSprites.splice(3,1)
           }
         })
@@ -160,6 +164,7 @@ class Pokemon extends Sprite{
               yoyo:true,
               duration: .08
             })
+            document.querySelector(healthNumber).innerHTML= `${recipient.health}/100`
           }
         }).to(this.position, {
           x:this.position.x

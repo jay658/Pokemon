@@ -124,6 +124,7 @@ function initBattle(){
   
   document.querySelector('#partyButton').addEventListener('click', ()=>{
     const newHP = 325 * charmander.health/100
+    document.querySelector('#mainPokemonHp').innerHTML = `${charmander.health}/100`
     document.querySelector('#mainPokemonHealthBar').style.width = `${newHP}px`
     document.querySelector('#party').style.display = 'block'
     document.querySelector('#partyChat').style.display = 'block'
@@ -187,9 +188,9 @@ function animateBattle(){
   })
 }
 
-// initBattle()
-// animateBattle()
-animate()
+initBattle()
+animateBattle()
+//animate()
 
 
 document.querySelector('#items').addEventListener('click', ()=>{
@@ -209,6 +210,7 @@ document.querySelector('#dialogueBox').addEventListener('click', (e)=>{
 
 document.querySelector('#potion').addEventListener('click', ()=>{
   const healthBar = document.querySelector('#playerHealthBar')
+  const healthNumber = document.querySelector('#playerHPNumber')
   document.querySelector('#itemsBox').style.display = 'none'
   opened = false
   const randomAttack = pidgey.attacks[Math.floor(Math.random() * pidgey.attacks.length)]
@@ -234,6 +236,7 @@ document.querySelector('#potion').addEventListener('click', ()=>{
         })
       }
     })
+    healthNumber.innerHTML=`${charmander.health}/100`
   }
 })
 
