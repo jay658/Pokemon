@@ -188,9 +188,9 @@ function animateBattle(){
   })
 }
 
-initBattle()
-animateBattle()
-//animate()
+// initBattle()
+// animateBattle()
+animate()
 
 
 document.querySelector('#items').addEventListener('click', ()=>{
