@@ -177,7 +177,7 @@ function animate(){
           rectangle2: battleZone
         }) && 
         overlappingArea > (player.width * player.height) /2 &&
-        Math.random() < 0.004
+        Math.random() < 0.007
       ){
         window.cancelAnimationFrame(animationId)
         battle.initiated = true
