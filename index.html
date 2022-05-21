@@ -46,8 +46,16 @@
       margin-left: 50px
     }
     .partyImg{
-      text-align:left
+      text-align:left;
+    }
+    #mainPokemon:hover{
+      background-color: #ddd;
+      cursor: pointer
       
+    }
+    .partyPokemon:hover{
+      background-color: #ddd;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -80,7 +88,7 @@
         padding: 12px
       "
     >
-      <h1 style="font-size:16px">Pidgey</h1>
+      <h1 id="enemyName" style="font-size:16px">Pidgey</h1>
       <div style="position:relative">
         <div style="height:10px; background-color: #ccc; margin-top:10px"></div>
         <div id ='enemyHealthBar' style="height:10px; background-color: green; position: absolute; top:0; left:0; right:0"></div>
@@ -149,35 +157,35 @@
       <div style ='position:absolute; top: 0; left: 440px; height: 572px; width: 528px'>
         <p id="partyPokemonName1" style="position:absolute; right:170px; top:20px">None</p>
         <div class ='partyPokemon' id="partyPokemon1">
-          <img class ='partyImg' id="partyImg1"></img>
+          <img class ='partyImg' id="partyImg1" style="margin-left:30px"></img>
           <div class='partyGreyBar' ></div>
           <div class ='partyPokemonHealthBar' id="partyPokemonHealthBar1" style="top:57"></div>
         </div>
         <p id="partyPokemonHP1" style="position:absolute; right:170px; top:55px"></p>
         <p id="partyPokemonName2" style="position:absolute; right:170px; top:139.4px">None</p>
         <div class ='partyPokemon' id="partyPokemon2">
-          <img class ='partyImg' id="partyImg2"></img>
+          <img class ='partyImg' id="partyImg2" style="margin-left:30px"></img>
           <div class='partyGreyBar'></div>
           <div class ='partyPokemonHealthBar' id="partyPokemonHealthBar2" style="top:176.4"></div>
         </div>
         <p id="partyPokemonHP2" style="position:absolute; right:170px; top:174.4px"></p>
         <p id="partyPokemonName3" style="position:absolute; right:170px; top:258.8px">None</p>
         <div class ='partyPokemon' id="partyPokemon3">
-          <img class ='partyImg' id="partyImg3"></img>
+          <img class ='partyImg' id="partyImg3" style="margin-left:30px"></img>
           <div class='partyGreyBar' ></div>
           <div class ='partyPokemonHealthBar' id="partyPokemonHealthBar3" style="top:295.8"></div>
         </div>
         <p id="partyPokemonHP3" style="position:absolute; right:170px; top:293.8px"></p>
         <p id="partyPokemonName4" style="position:absolute; right:170px; top:378.2px">None</p>
         <div class ='partyPokemon' id="partyPokemon4">
-          <img class ='partyImg' id="partyImg4"></img>
+          <img class ='partyImg' id="partyImg4" style="margin-left:30px"></img>
           <div class='partyGreyBar' ></div>
           <div class ='partyPokemonHealthBar' id="partyPokemonHealthBar4" style="top:415.2"></div>
         </div>
         <p id="partyPokemonHP4" style="position:absolute; right:170px; top:413.2px"></p>
         <p id="partyPokemonName5" style="position:absolute; right:170px; top:497.6px">None</p>
         <div class ='partyPokemon' id="partyPokemon5">
-          <img class ='partyImg' id="partyImg5"></img>
+          <img class ='partyImg' id="partyImg5" style="margin-left:30px"></img>
           <div class='partyGreyBar' ></div>
           <div class ='partyPokemonHealthBar' id="partyPokemonHealthBar5" style="top:534.6"></div>
         </div>

@@ -32,48 +32,14 @@ let myBase = new Sprite({
   img:myBaseImage
 })
 
-let pidgey = new Pokemon(pokemons.Pidgey)
-let charmander = new Pokemon(pokemons.Charmander)
-let renderedSprites = [enemyBase, myBase, pidgey, charmander]
 let battleAnimationId
 let queue = []
 let opened = false
 let potionQuantity = 2
 let party = []
 let sub = []
-
-const pidgeyAttack = ()=>{
-  const randomAttack = pidgey.attacks[Math.floor(Math.random() * pidgey.attacks.length)]
-  return(
-    queue.push(()=>{
-      pidgey.attack({ 
-        attack: randomAttack,
-        recipient: charmander,
-        renderedSprites
-      })
-
-      if(charmander.health <= 0){
-        queue.push(()=>{
-          charmander.faint()
-        })
-        queue.push(()=>{
-          gsap.to('#overlappingDiv', {
-            opacity: 1,
-            onComplete: ()=>{
-              cancelAnimationFrame(battleAnimationId)
-              animate()
-              document.querySelector('#userInterface').style.display = 'none'
-              gsap.to('#overlappingDiv', {
-                opacity:0
-              })
-              battle.initiated = false
-            }
-          })
-        })
-      }
-    })
-  )
-}
+const allPokemon = []
+let renderedSprites, charmander, pidgey, rattata, pikachu, eevee
 
 function initBattle(){
   party = []
@@ -83,7 +49,9 @@ function initBattle(){
   document.querySelector('#userInterface').style.display ='block'
   document.querySelector('#dialogueBox').style.display ='none'
   document.querySelector('#enemyHealthBar').style.width ='100%'
-  document.querySelector('#playerHealthBar').style.width ='100%'
+  document.querySelector('#enemyHPNumber').innerHTML ='100/100'
+  document.querySelector('#playerHealthBar').style.width = charmander? `${charmander.health}%` : '100%'
+  document.querySelector('#playerHPNumber').innerHTML = charmander?`${charmander.health}/100` : `100/100`
   document.querySelector('#attacksBox').replaceChildren()
   enemyBase = new Sprite({
     position:{
@@ -100,15 +68,31 @@ function initBattle(){
     img:myBaseImage
   })
 
-  pidgey = new Pokemon({...pokemons.Pidgey})
+  pidgey = new Pokemon({...pokemons.Pidgey, isEnemy:true, health:100})
 
-  charmander = new Pokemon({...pokemons.Charmander,isMain: true})
+  rattata = new Pokemon({...pokemons.Rattata, isEnemy:true, health:100})
+
+  charmander = new Pokemon({...pokemons.Charmander,isMain: true, health:charmander? charmander.health:100})
 
   pikachu = new Pokemon({...pokemons.Pikachu})
 
-  party.push(charmander, pikachu)
+  eevee = new Pokemon({...pokemons.Eevee})
 
+  allPokemon.push(pidgey, charmander, pikachu, eevee, rattata)
+
+  party.push(charmander, pikachu, eevee)
   const mainPokemon = party.find(pokemon=> pokemon.isMain === true)
+  const enemies = allPokemon.filter(pokemon => pokemon.isEnemy === true)
+  const enemy = enemies[Math.floor(Math.random() * enemies.length)]
+  
+  enemy.opacity = 1
+  enemy.position = {
+    x:550,
+    y:90
+  }
+
+  document.querySelector('#enemyName').innerHTML = enemy.name
+  
   sub = party.filter(pokemon=> !pokemon.isMain)
   
   sub.forEach((pokemon, idx)=>{
@@ -118,7 +102,7 @@ function initBattle(){
     document.querySelector(`#partyPokemonHP${idx+1}`).innerHTML = `${pokemon.health}/100`
   })
 
-  renderedSprites = [enemyBase, myBase, pidgey, charmander]
+  renderedSprites = [enemyBase, myBase, enemy, mainPokemon]
   queue=[]
   
   document.querySelector('#mainPokemonName').innerHTML= mainPokemon.name
@@ -149,18 +133,6 @@ function initBattle(){
       document.querySelector(`#partyImg${idx}`).src= pokemon.icon1
     })
   })
-  
-  // const charmanderAnimation = gsap.to('#mainPokemonIcon',{
-  //   attr:{
-  //     src: `${mainPokemon.icon2}`
-  //   },
-  //   repeat:-1,
-  //   repeatDelay:0.08,
-  //   duration:0.15,
-  //   yoyo:true,
-  // })
-
-  // charmanderAnimation.pause()
 
   document.querySelector('#noPickPokemon').addEventListener('click', ()=>{
     document.querySelector('#party').style.display = 'none'
@@ -175,25 +147,31 @@ function initBattle(){
     document.querySelector('#partyChat').style.display = 'block'
   })
 
-  charmander.attacks.forEach(attack=>{
-    const button = document.createElement('button')
-    button.innerHTML = `<div>${attack.name}</div> <div>(${attack.type})</div>`
-    button.value = attack.name
-    button.classList.add('attacks')
-    document.querySelector('#attacksBox').append(button)
-  })
-  //our event listeners for our buttons (attack)
+  for(let i = 0; i < 4; i++){
+    const attack = mainPokemon.attacks[i]
+    if(mainPokemon.attacks[i]){
+      const button = document.createElement('button')
+      button.innerHTML = `<div>${attack.name}</div> <div>(${attack.type})</div>`
+      button.value = attack.name
+      button.classList.add('attacks')
+      document.querySelector('#attacksBox').append(button)
+    }else {
+      const button = document.createElement('button')
+      document.querySelector('#attacksBox').append(button)
+    }
+  }
+  
   document.querySelectorAll('.attacks').forEach(button=>{
     button.addEventListener('click', (e)=>{
       const selectedAttack = attacks[e.currentTarget.value]
       mainPokemon.attack({ 
         attack: selectedAttack,
-        recipient: pidgey,
+        recipient: enemy,
         renderedSprites
       })
-      if(pidgey.health <= 0){
+      if(enemy.health <= 0){
         queue.push(()=>{
-          pidgey.faint()
+          enemy.faint()
         })
         queue.push(()=>{
           gsap.to('#overlappingDiv', {
@@ -211,7 +189,38 @@ function initBattle(){
         })
       }
       //enemy attacks
-      pidgeyAttack()
+      
+      const randomAttack = enemy.attacks[Math.floor(Math.random() * enemy.attacks.length)]
+      return(
+        queue.push(()=>{
+          enemy.attack({ 
+            attack: randomAttack,
+            recipient: mainPokemon,
+            renderedSprites
+          })
+    
+          if(mainPokemon.health <= 0){
+            queue.push(()=>{
+              mainPokemon.faint()
+            })
+            queue.push(()=>{
+              gsap.to('#overlappingDiv', {
+                opacity: 1,
+                onComplete: ()=>{
+                  cancelAnimationFrame(battleAnimationId)
+                  animate()
+                  document.querySelector('#userInterface').style.display = 'none'
+                  gsap.to('#overlappingDiv', {
+                    opacity:0
+                  })
+                  battle.initiated = false
+                }
+              })
+            })
+          }
+        })
+      )
+      
     })
   })
 }
@@ -224,9 +233,9 @@ function animateBattle(){
   })
 }
 
-initBattle()
-animateBattle()
-// animate()
+//initBattle()
+//animateBattle()
+animate()
 
 
 document.querySelector('#items').addEventListener('click', ()=>{
@@ -245,12 +254,13 @@ document.querySelector('#dialogueBox').addEventListener('click', (e)=>{
 })
 
 document.querySelector('#potion').addEventListener('click', ()=>{
+  const enemy = allPokemon.find(pokemon=> pokemon.isEnemy === true)
   const mainPokemon = party.find(pokemon=> pokemon.isMain === true) 
   const healthBar = document.querySelector('#playerHealthBar')
   const healthNumber = document.querySelector('#playerHPNumber')
   document.querySelector('#itemsBox').style.display = 'none'
   opened = false
-  const randomAttack = pidgey.attacks[Math.floor(Math.random() * pidgey.attacks.length)]
+  const randomAttack = enemy.attacks[Math.floor(Math.random() * enemy.attacks.length)]
   if(potionQuantity === 0){
     document.querySelector('#dialogueBox').innerHTML = "You are out of potions!"
     document.querySelector('#dialogueBox').style.display = 'block'
@@ -266,7 +276,7 @@ document.querySelector('#potion').addEventListener('click', ()=>{
     gsap.to(healthBar,{
       width: `${mainPokemon.health}%`,
       onComplete(){
-        pidgey.attack({
+        enemy.attack({
           attack: randomAttack,
           recipient: mainPokemon,
           renderedSprites

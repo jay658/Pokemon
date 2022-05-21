@@ -60,15 +60,16 @@ class Sprite {
 }
 
 class Pokemon extends Sprite{
-  constructor({position, velocity, img, frames = {max:1, hold:20}, sprites, animate=false, rotation=0, isEnemy = false, name, attacks, isMain = false, icon1, icon2}){
+  constructor({position, velocity, img, frames = {max:1, hold:20}, sprites, animate=false, rotation=0, isEnemy = false, name, attacks, isMain = false, icon1, icon2, partyPosition, health = 100}){
     super({position, velocity, img, frames, sprites, animate, rotation})
-    this.health = 100
+    this.health = health
     this.isEnemy = isEnemy
-    this.name = name,
+    this.name = name
     this.attacks = attacks
     this.isMain = isMain
     this.icon1 = icon1
     this.icon2 = icon2
+    this.partyPosition = partyPosition
   }
 
   faint(){

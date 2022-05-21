@@ -1,7 +1,3 @@
-const pikachuImage = new Image()
-
-const pidgeyImage = new Image()
-
 const pokemons = {
   Pikachu:{
     position:{
@@ -37,8 +33,35 @@ const pokemons = {
     img:{
       src:'./img/pidgey.png'
     },
-    isEnemy: true,
+    icon1: './img/pidgey first.png', 
+    icon2: './img/pidgey second.png',
     name: 'Pidgey',
     attacks:[attacks.Tackle]
-  }
+  },
+  Eevee:{
+    position:{
+      x:140,
+      y:278
+    },
+    img:{
+      src:'./img/eevee.png'
+    },
+    icon1:'./img/eevee first.png',
+    icon2: './img/eevee second.png',
+    name:'Eevee',
+    attacks:[attacks.Tackle, attacks.Ember]
+  },
+  Rattata:{
+    position:{
+      x:550,
+      y:90
+    },
+    img:{
+      src:'./img/rattata.png'
+    },
+    icon1: './img/rattata first.png', 
+    icon2: './img/rattata second.png',
+    name: 'Rattata',
+    attacks:[attacks.Tackle]
+  },
 }

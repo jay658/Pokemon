@@ -234,6 +234,9 @@ function animate(){
       if(ev.code === 'Space' && stanleyCollision()){
         stanley.frames.val = 2
         document.querySelector('#chatBox').style.display ='block'
+      }else{
+        document.querySelector('#chatBox').style.display ='none'
+        stanley.frames.val = 0
       }
     })
     player.animate = true
@@ -284,7 +287,10 @@ function animate(){
       if(ev.code === 'Space' && stanleyCollision()){
         stanley.frames.val = 1
         document.querySelector('#chatBox').style.display ='block'
-      }else document.querySelector('#chatBox').style.display ='none'
+      }else {
+        document.querySelector('#chatBox').style.display ='none'
+        stanley.frames.val = 0
+      }
     })
     player.animate = true
     player.img = player.sprites.right
