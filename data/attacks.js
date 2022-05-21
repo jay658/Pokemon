@@ -6,7 +6,7 @@ const attacks = {
   },
   Ember:{
     name:'Ember',
-    damage: 25,
+    damage: 50,
     type: 'Fire'
   }
 }

@@ -39,6 +39,8 @@ let battleAnimationId
 let queue = []
 let opened = false
 let potionQuantity = 2
+let party = []
+let sub = []
 
 const pidgeyAttack = ()=>{
   const randomAttack = pidgey.attacks[Math.floor(Math.random() * pidgey.attacks.length)]
@@ -74,6 +76,8 @@ const pidgeyAttack = ()=>{
 }
 
 function initBattle(){
+  party = []
+  sub = []
   document.querySelector('#mainPokemonHealthBar').style.width = '325px'
   document.querySelector('#itemsBox').style.display = 'none'
   document.querySelector('#userInterface').style.display ='block'
@@ -95,48 +99,80 @@ function initBattle(){
     },
     img:myBaseImage
   })
-  pidgey = new Pokemon({...pokemons.Pidgey, position:{
-    x:550,
-    y:90
-  }})
-  charmander = new Pokemon({...pokemons.Charmander, position:{
-    x:140,
-    y:278
-  }})
+
+  pidgey = new Pokemon({...pokemons.Pidgey})
+
+  charmander = new Pokemon({...pokemons.Charmander,isMain: true})
+
+  pikachu = new Pokemon({...pokemons.Pikachu})
+
+  party.push(charmander, pikachu)
+
+  const mainPokemon = party.find(pokemon=> pokemon.isMain === true)
+  sub = party.filter(pokemon=> !pokemon.isMain)
+  
+  sub.forEach((pokemon, idx)=>{
+    document.querySelector(`#partyPokemonHealthBar${idx+1}`).style.width = `${325*pokemon.health/100}px`
+    document.querySelector(`#partyImg${idx+1}`).src=`${pokemon.icon1}`
+    document.querySelector(`#partyPokemonName${idx+1}`).innerHTML = pokemon.name
+    document.querySelector(`#partyPokemonHP${idx+1}`).innerHTML = `${pokemon.health}/100`
+  })
+
   renderedSprites = [enemyBase, myBase, pidgey, charmander]
   queue=[]
+  
+  document.querySelector('#mainPokemonName').innerHTML= mainPokemon.name
+  document.querySelector('#partyImg0').src=`${mainPokemon.icon1}`
+  
+  const animations = []
 
-  const charmanderAnimation = gsap.to('#mainPokemonIcon',{
-    attr:{
-      src: "./img/charmander image.png"
-    },
-    repeat:-1,
-    repeatDelay:0.08,
-    duration:0.15,
-    yoyo:true,
+  party.forEach((pokemon, idx)=>{
+    animations.push(
+      gsap.to(`#partyImg${idx}`,{
+        attr:{
+          src: `${pokemon.icon2}`
+        },
+        repeat:-1,
+        repeatDelay:0.08,
+        duration:0.15,
+        yoyo:true,
+      })
+    )
+    animations[idx].pause()
+
+    document.querySelector(`#partyImg${idx}`).addEventListener('mouseover', ()=>{
+      animations[idx].play()
+    })
+  
+    document.querySelector(`#partyImg${idx}`).addEventListener('mouseleave', ()=>{
+      animations[idx].pause()
+      document.querySelector(`#partyImg${idx}`).src= pokemon.icon1
+    })
   })
   
+  // const charmanderAnimation = gsap.to('#mainPokemonIcon',{
+  //   attr:{
+  //     src: `${mainPokemon.icon2}`
+  //   },
+  //   repeat:-1,
+  //   repeatDelay:0.08,
+  //   duration:0.15,
+  //   yoyo:true,
+  // })
+
+  // charmanderAnimation.pause()
+
   document.querySelector('#noPickPokemon').addEventListener('click', ()=>{
-    charmanderAnimation
     document.querySelector('#party').style.display = 'none'
     document.querySelector('#partyChat').style.display = 'none'
   })
   
   document.querySelector('#partyButton').addEventListener('click', ()=>{
-    const newHP = 325 * charmander.health/100
-    document.querySelector('#mainPokemonHp').innerHTML = `${charmander.health}/100`
+    const newHP = 325 * mainPokemon.health/100
+    document.querySelector('#mainPokemonHp').innerHTML = `${mainPokemon.health}/100`
     document.querySelector('#mainPokemonHealthBar').style.width = `${newHP}px`
     document.querySelector('#party').style.display = 'block'
     document.querySelector('#partyChat').style.display = 'block'
-  })
-  
-  document.querySelector('#mainPokemonIcon').addEventListener('mouseover', ()=>{
-      charmanderAnimation.play()
-    })
-  
-  document.querySelector('#mainPokemonIcon').addEventListener('mouseleave', ()=>{
-    charmanderAnimation.pause()
-    document.querySelector('#mainPokemonIcon').src='./img/charmander icon2.png'
   })
 
   charmander.attacks.forEach(attack=>{
@@ -150,7 +186,7 @@ function initBattle(){
   document.querySelectorAll('.attacks').forEach(button=>{
     button.addEventListener('click', (e)=>{
       const selectedAttack = attacks[e.currentTarget.value]
-      charmander.attack({ 
+      mainPokemon.attack({ 
         attack: selectedAttack,
         recipient: pidgey,
         renderedSprites
@@ -188,9 +224,9 @@ function animateBattle(){
   })
 }
 
-// initBattle()
-// animateBattle()
-animate()
+initBattle()
+animateBattle()
+// animate()
 
 
 document.querySelector('#items').addEventListener('click', ()=>{
@@ -209,6 +245,7 @@ document.querySelector('#dialogueBox').addEventListener('click', (e)=>{
 })
 
 document.querySelector('#potion').addEventListener('click', ()=>{
+  const mainPokemon = party.find(pokemon=> pokemon.isMain === true) 
   const healthBar = document.querySelector('#playerHealthBar')
   const healthNumber = document.querySelector('#playerHPNumber')
   document.querySelector('#itemsBox').style.display = 'none'
@@ -218,25 +255,25 @@ document.querySelector('#potion').addEventListener('click', ()=>{
     document.querySelector('#dialogueBox').innerHTML = "You are out of potions!"
     document.querySelector('#dialogueBox').style.display = 'block'
   }
-  else if(charmander.health === 100){
-    document.querySelector('#dialogueBox').innerHTML = "Charmander is already full health!"
+  else if(mainPokemon.health === 100){
+    document.querySelector('#dialogueBox').innerHTML = `${mainPokemon.name} is already full health!`
     document.querySelector('#dialogueBox').style.display = 'block'
   }else{
-    if(charmander.health >= 90) charmander.health = 100
-    else charmander.health += 20
+    if(mainPokemon.health >= 90) mainPokemon.health = 100
+    else mainPokemon.health += 20
     potionQuantity -=1
     document.querySelector('#potion').innerHTML = `Potion x${potionQuantity}`
     gsap.to(healthBar,{
-      width: `${charmander.health}%`,
+      width: `${mainPokemon.health}%`,
       onComplete(){
         pidgey.attack({
           attack: randomAttack,
-          recipient: charmander,
+          recipient: mainPokemon,
           renderedSprites
         })
       }
     })
-    healthNumber.innerHTML=`${charmander.health}/100`
+    healthNumber.innerHTML=`${mainPokemon.health}/100`
   }
 })
 

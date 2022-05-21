@@ -11,6 +11,8 @@ const pokemons = {
     img:{
       src:'./img/pikachu.png'
     },
+    icon1:'./img/pikachu icon1.png',
+    icon2: './img/pikachu icon image.png',
     name:'Pikachu',
     attacks:[attacks.Tackle, attacks.Ember]
   },
@@ -22,6 +24,8 @@ const pokemons = {
     img:{
       src:'./img/charmander.png'
     },
+    icon1:'./img/charmander icon2.png',
+    icon2: './img/charmander image.png',
     name:'Charmander',
     attacks:[attacks.Tackle, attacks.Ember]
   },
